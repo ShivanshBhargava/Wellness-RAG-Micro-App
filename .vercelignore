@@ -1,0 +1,8 @@
+# Ignore backend and Android files for frontend deployment
+backend/
+frontend/android/
+frontend/node_modules/
+frontend/dist/
+*.log
+.env
+.env.local
