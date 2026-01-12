@@ -38,6 +38,13 @@ A professional, local-first wellness application featuring a robust RAG (Retriev
 - **Choice**: Separated Routes, Controllers, Services, and Models.
 - **Justification**: Ensures scalability and maintainability. RAG logic is isolated within the `rag/` folder and associated services.
 
+### 6. Safety Detection Module (Deterministic Guardrails)
+- **Choice**: Keyword-based heuristic filter + structured safety response generator.
+- **Justification**:
+  - **Reliability**: Deterministic matching for high-risk topics (pregnancy, surgery, acute conditions) ensures consistent safety disclaimers.
+  - **Ethics**: Explicitly prevents medical advice while suggesting gentle, safe alternatives.
+  - **Efficiency**: Near-zero latency, running locally before any network calls.
+
 ---
 
 ## Getting Started (Backend)
