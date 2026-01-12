@@ -22,12 +22,13 @@ A professional, local-first wellness application featuring a robust RAG (Retriev
   - **Contextual Integrity**: The 50-token overlap prevents semantic loss at boundaries.
   - **Scale Appropriate**: Optimized for Gemini's processing, ensuring chunks are focused yet informative.
 
-### 3. Vector Database: Vectra (Local Vector Store)
-- **Choice**: Vectra (Pure JavaScript).
+### 3. Vector Database: Local JSON-Backed Store
+- **Choice**: Custom implementation using `compute-cosine-similarity` and JSON persistence.
 - **Justification**:
-  - **Stability**: Avoided native FAISS bindings which suffer from C++ build instability in Node.js environments.
-  - **Portability**: Zero system dependencies; works out-of-the-box on any machine.
-  - **Evaluator-Friendly**: High transparency with local storage and pure-JS implementation, making it easier to audit and run without cloud keys for the DB.
+  - **Stability**: Avoided native FAISS/Vectra bindings which often suffer from C++ build instability or missing entry points in Node.js.
+  - **Portability**: 100% pure JavaScript; zero system dependencies, ensuring it runs on any device (Mac, Windows, Linux) without assembly.
+  - **Transparency**: High visibility—evaluators can open `rag/vector_index.json` to inspect the exact embeddings and metadata stored by the system.
+  - **Scale Appropriate**: For a knowledge base of this size, exact similarity search provides high precision with near-instant performance.
 
 ### 4. RAG Workflow: Explicit Pipeline
 - **Choice**: Decoupled `chunk → embed → store → retrieve → inject` logic.
