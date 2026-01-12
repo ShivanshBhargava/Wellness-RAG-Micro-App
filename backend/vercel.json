@@ -5,10 +5,5 @@
             "source": "/(.*)",
             "destination": "/index.js"
         }
-    ],
-    "functions": {
-        "index.js": {
-            "includeFiles": "rag/**"
-        }
-    }
+    ]
 }
