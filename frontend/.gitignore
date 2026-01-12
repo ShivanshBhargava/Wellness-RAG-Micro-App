@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# Environment Variables
 .env
 .env.*
 !.env.example
@@ -21,7 +23,16 @@ dist-ssr
 .idea
 .DS_Store
 *.suo
-*.ntvs*
+*.ntvs
 *.njsproj
 *.sln
 *.sw?
+
+# Capacitor / Android
+android/app/build/
+android/.gradle/
+android/local.properties
+android/.idea/
+*.apk
+*.aab
+*.keystore

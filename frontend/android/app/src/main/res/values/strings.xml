@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">VedaFlow</string>
+    <string name="title_activity_main">VedaFlow</string>
+    <string name="package_name">com.vedaflow.wellness</string>
+    <string name="custom_url_scheme">com.vedaflow.wellness</string>
+</resources>
