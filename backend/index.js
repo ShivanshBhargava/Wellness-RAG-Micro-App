@@ -6,9 +6,26 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+// CORS Configuration
+const corsOptions = {
+  origin: [
+    'https://wellness-rag-micro-app.vercel.app',
+    'https://wellness-rag-micro-app.vercel.app/',
+    'http://localhost:5173',
+    'http://localhost:3000',
+    /\.vercel\.app$/
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
+
+// Handle preflight requests
+app.options('*', cors(corsOptions));
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
