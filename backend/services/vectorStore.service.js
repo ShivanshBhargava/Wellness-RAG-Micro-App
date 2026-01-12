@@ -16,7 +16,7 @@ const cosineSimilarity = require('compute-cosine-similarity');
  *    retrieval speeds with zero installation or build overhead.
  */
 
-const INDEX_FILE = path.join(__dirname, '../../rag/vector_index.json');
+const INDEX_FILE = path.join(__dirname, '../rag/vector_index.json');
 
 class VectorStoreService {
     constructor() {
