@@ -1,2 +1,9 @@
-# Wellness-RAG-Micro-App
-AI-powered wellness micro-app that answers yoga-related questions using a Retrieval-Augmented Generation (RAG) pipeline. Retrieves relevant yoga content from a vector DB, shows sources, applies safety checks for medical risks, and logs queries, answers, and flags in MongoDB.
+# Wellness App
+
+A professional monorepo application for wellness management.
+
+## Project Structure
+
+- `frontend/` - Frontend application
+- `backend/` - Backend services
+- `rag/` - RAG (Retrieval-Augmented Generation) services
