@@ -28,7 +28,7 @@ class ChatService {
      */
     async generateGroundedResponse(query, contextChunks) {
         try {
-            const model = this.genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+            const model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
             // Format context into a readable block for the LLM
             const formattedContext = contextChunks.map((chunk, i) => (
@@ -52,6 +52,7 @@ CONSTRAINTS:
 3. CITATIONS: When using information, mention which article or pose it comes from (e.g., "According to [Source Title]...").
 4. TONE: Gentle, professional, and clear.
 5. SAFETY: If the user describes a physical pain, remind them to stop and listen to their body.
+6. FORMATTING: Use clean Markdown. Use **bold** for pose names or key benefits. Use *italics* for emphasis. Use bullet points for steps or benefits. Avoid excessive symbols or decorative characters.
 
 USER QUERY: ${query}
 

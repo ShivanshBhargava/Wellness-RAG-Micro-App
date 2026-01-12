@@ -22,7 +22,7 @@ class LoggingService {
      * @param {Object} data.safety - The safety detection result { isUnsafe, reason }.
      * @returns {Promise<Object>} The saved database document.
      */
-    async logInteraction({ userQuery, retrievedChunks = [], aiResponse, safety }) {
+    async logInteraction({ userQueryId, userQuery, retrievedChunks = [], aiResponse, safety }) {
         try {
             // Map chunks to the schema format
             const formattedChunks = retrievedChunks.map(chunk => ({
@@ -33,7 +33,9 @@ class LoggingService {
             }));
 
             // Atomic creation of the log entry
+            // If queryId is provided, we use it as the document _id to allow frontend to have it immediately
             const logEntry = await Query.create({
+                _id: userQueryId || undefined,
                 userQuery,
                 safetyFlag: {
                     isUnsafe: safety.isUnsafe,
@@ -41,7 +43,7 @@ class LoggingService {
                 },
                 retrievedChunks: formattedChunks,
                 aiResponse,
-                modelUsed: 'gemini-flash-latest'
+                modelUsed: 'gemini-2.5-flash'
             });
 
             console.log(`[LOGGED] Interaction saved: ${logEntry._id}`);

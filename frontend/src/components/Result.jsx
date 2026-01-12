@@ -21,56 +21,68 @@ const Result = ({ data }) => {
     return (
         <div className="container animate-in" style={styles.container}>
             {isUnsafe && (
-                <div style={styles.warningBanner}>
-                    <svg style={styles.warningIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                        <line x1="12" y1="9" x2="12" y2="13"></line>
-                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                    </svg>
-                    <span style={styles.warningText}>Safety Consideration: Professional consultation is advised for medical queries.</span>
+                <div style={styles.safetyBlock}>
+                    <div style={styles.safetyHeader}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        <h3 style={styles.safetyTitle}>SAFETY GUIDANCE</h3>
+                    </div>
+                    <div style={styles.safetyContent}>
+                        {answer.split('\n').map((line, i) => (
+                            <p key={i} style={styles.safetyParagraph}>{line}</p>
+                        ))}
+                    </div>
+                    <p style={styles.safetyDisclaimer}>
+                        This information is for educational purposes and is not a substitute for professional medical advice.
+                    </p>
                 </div>
             )}
 
-            <article className="wellness-card">
-                <div style={styles.content}>
-                    {answer.split('\n').map((line, i) => (
-                        <p key={i} style={styles.paragraph}>{line}</p>
-                    ))}
-                </div>
-
-                {!isUnsafe && sources && sources.length > 0 && (
-                    <div style={styles.sourcesWrapper}>
-                        <h4 style={styles.sourcesHeading}>REFERENCES</h4>
-                        <ul style={styles.sourcesList}>
-                            {sources.map((source, i) => (
-                                <li key={i} style={styles.sourceItem}>
-                                    <a href={source.link} target="_blank" rel="noopener noreferrer" style={styles.sourceLink}>
-                                        {source.title}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
+            {!isUnsafe && (
+                <article className="wellness-card">
+                    <div style={styles.content}>
+                        {answer.split('\n').map((line, i) => (
+                            <p key={i} style={styles.paragraph}>{line}</p>
+                        ))}
                     </div>
-                )}
 
-                <div style={styles.footer}>
-                    <div style={styles.feedback}>
-                        <span style={styles.feedbackLabel}>Helpful?</span>
-                        <button
-                            onClick={() => handleFeedback(true)}
-                            style={{ ...styles.feedbackBtn, ...(feedbackStatus === 'positive' ? styles.feedbackBtnActive : {}) }}
-                        >
-                            YES
-                        </button>
-                        <button
-                            onClick={() => handleFeedback(false)}
-                            style={{ ...styles.feedbackBtn, ...(feedbackStatus === 'negative' ? styles.feedbackBtnActive : {}) }}
-                        >
-                            NO
-                        </button>
+                    {sources && sources.length > 0 && (
+                        <div style={styles.sourcesWrapper}>
+                            <h4 style={styles.sourcesHeading}>REFERENCES</h4>
+                            <ul style={styles.sourcesList}>
+                                {sources.map((source, i) => (
+                                    <li key={i} style={styles.sourceItem}>
+                                        <a href={source.link} target="_blank" rel="noopener noreferrer" style={styles.sourceLink}>
+                                            {source.title}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
+                    <div style={styles.footer}>
+                        <div style={styles.feedback}>
+                            <span style={styles.feedbackLabel}>Helpful?</span>
+                            <button
+                                onClick={() => handleFeedback(true)}
+                                style={{ ...styles.feedbackBtn, ...(feedbackStatus === 'positive' ? styles.feedbackBtnActive : {}) }}
+                            >
+                                YES
+                            </button>
+                            <button
+                                onClick={() => handleFeedback(false)}
+                                style={{ ...styles.feedbackBtn, ...(feedbackStatus === 'negative' ? styles.feedbackBtnActive : {}) }}
+                            >
+                                NO
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </article>
+                </article>
+            )}
         </div>
     );
 };
@@ -79,23 +91,44 @@ const styles = {
     container: {
         paddingBottom: '100px',
     },
-    warningBanner: {
-        backgroundColor: '#fff5f5',
-        border: '1px solid #fab1a0',
-        borderRadius: '4px',
-        padding: '12px 20px',
-        marginBottom: '20px',
+    safetyBlock: {
+        backgroundColor: '#fffcfc',
+        border: '1px solid #ffccca',
+        borderRadius: '8px',
+        padding: '2.5rem',
+        boxShadow: '0 4px 15px rgba(214, 48, 49, 0.05)',
+    },
+    safetyHeader: {
         display: 'flex',
         alignItems: 'center',
         gap: '12px',
-    },
-    warningIcon: {
         color: '#d63031',
+        marginBottom: '20px',
     },
-    warningText: {
+    safetyTitle: {
+        fontSize: '0.8rem',
+        fontWeight: '800',
+        letterSpacing: '0.15em',
         color: '#d63031',
-        fontSize: '0.85rem',
-        fontWeight: '500',
+        margin: 0,
+    },
+    safetyContent: {
+        color: '#2d3436',
+        fontSize: '1.05rem',
+        lineHeight: '1.8',
+        marginBottom: '24px',
+    },
+    safetyParagraph: {
+        marginBottom: '1rem',
+    },
+    safetyDisclaimer: {
+        fontSize: '0.8rem',
+        fontStyle: 'italic',
+        color: '#d63031',
+        opacity: 0.8,
+        borderTop: '1px solid #ffebea',
+        paddingTop: '16px',
+        marginTop: '16px',
     },
     content: {
         marginBottom: '40px',

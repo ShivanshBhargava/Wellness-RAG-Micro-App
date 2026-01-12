@@ -1,45 +1,92 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
 
 const LoadingState = () => {
     return (
-        <div className="container" style={styles.container}>
-            <div className="wellness-card" style={styles.card}>
-                <div style={styles.skeletonTitle}></div>
-                <div style={styles.skeletonLine}></div>
-                <div style={styles.skeletonLine}></div>
-                <div style={styles.skeletonLineShort}></div>
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="android-card"
+            style={styles.container}
+        >
+            <div style={styles.header}>
+                <motion.div
+                    animate={{
+                        rotate: [0, 360],
+                        scale: [1, 1.2, 1]
+                    }}
+                    transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                >
+                    <Sparkles size={20} color="var(--accent-primary)" />
+                </motion.div>
+                <span style={styles.loadingText}>Consulting the Veda library...</span>
             </div>
-        </div>
+
+            <div style={styles.skeletonBody}>
+                <div style={styles.shimmerLine} className="shimmer"></div>
+                <div style={styles.shimmerLine} className="shimmer"></div>
+                <div style={styles.shimmerLineShort} className="shimmer"></div>
+            </div>
+
+            <motion.p
+                animate={{ opacity: [0.4, 0.7, 0.4] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                style={styles.quote}
+            >
+                Finding the most balanced response for you.
+            </motion.p>
+        </motion.div>
     );
 };
 
 const styles = {
     container: {
-        paddingBottom: '100px',
-        animation: 'pulse 1.5s ease-in-out infinite',
+        minHeight: '200px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+        padding: '24px',
+        backgroundColor: 'var(--surface-color)',
     },
-    card: {
-        opacity: 0.6,
+    header: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
     },
-    skeletonTitle: {
-        height: '24px',
-        backgroundColor: '#eef2ef',
-        borderRadius: '4px',
-        marginBottom: '24px',
-        width: '60%',
+    loadingText: {
+        fontSize: '0.9rem',
+        fontWeight: '700',
+        color: 'var(--accent-primary)',
+        letterSpacing: '0.02em',
     },
-    skeletonLine: {
+    skeletonBody: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '12px',
+    },
+    shimmerLine: {
         height: '14px',
-        backgroundColor: '#eef2ef',
-        borderRadius: '4px',
-        marginBottom: '16px',
         width: '100%',
-    },
-    skeletonLineShort: {
-        height: '14px',
-        backgroundColor: '#eef2ef',
+        backgroundColor: 'var(--surface-alt)',
         borderRadius: '4px',
-        width: '40%',
+    },
+    shimmerLineShort: {
+        height: '14px',
+        width: '60%',
+        backgroundColor: 'var(--surface-alt)',
+        borderRadius: '4px',
+    },
+    quote: {
+        fontSize: '0.75rem',
+        color: 'var(--text-secondary)',
+        fontStyle: 'italic',
+        textAlign: 'center',
+        marginTop: 'auto',
     }
 };
 

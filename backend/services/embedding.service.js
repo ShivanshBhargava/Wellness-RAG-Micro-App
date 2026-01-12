@@ -9,10 +9,13 @@ require('dotenv').config();
 
 class EmbeddingService {
     constructor() {
-        if (!process.env.GEMINI_API_KEY) {
+        const key = process.env.GEMINI_API_KEY;
+        if (!key) {
             console.warn('GEMINI_API_KEY is missing. Embedding service will fail until configured.');
+        } else {
+            console.log(`[DEBUG] EmbeddingService using key starting with: ${key.substring(0, 5)}...`);
         }
-        this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'PLACEHOLDER');
+        this.genAI = new GoogleGenerativeAI(key || 'PLACEHOLDER');
     }
 
     // Helper for controlled delays

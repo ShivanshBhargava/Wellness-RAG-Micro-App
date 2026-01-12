@@ -1,114 +1,197 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg-color: #f7f9f7;
-  --text-main: #2d3436;
-  --text-muted: #636e72;
-  --primary-sage: #4b6352;
-  --primary-sage-light: #eef2ef;
-  --accent-gold: #b28a5d;
-  --border-color: #e2e8e2;
-  --white: #ffffff;
-  --danger: #d63031;
-  --danger-light: #fff5f5;
-  --shadow-subtle: 0 2px 12px rgba(0, 0, 0, 0.04);
+  /* Zen Slate Theme */
+  --bg-color: #fbfbf9;
+  --surface-color: #ffffff;
+  --surface-alt: #f1f1ee;
+  --text-primary: #1c1c1a;
+  --text-secondary: #6e6e66;
+  --accent-primary: #4a5d4e;
+  /* Deep Sage */
+  --accent-secondary: #c9a47c;
+  /* Warm Sand */
+  --danger: #d44e4e;
+
+  --border-subtle: rgba(0, 0, 0, 0.05);
+  --shadow-premium: 0 12px 40px rgba(0, 0, 0, 0.04);
+  --radius-xl: 32px;
+  --radius-lg: 20px;
+  --radius-pill: 100px;
+}
+
+/* Dark Mode support - OLED Black OLED Oasis */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #0c0d0c;
+    --surface-color: #151615;
+    --surface-alt: #1c1d1c;
+    --text-primary: #f0f0ed;
+    --text-secondary: #a0a096;
+    --accent-primary: #a8c1a8;
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --shadow-premium: 0 12px 40px rgba(0, 0, 0, 0.4);
+  }
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   background-color: var(--bg-color);
-  color: var(--text-main);
-  line-height: 1.7;
-  -webkit-font-smoothing: antialiased;
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow: hidden;
 }
 
-h1,
-h2,
-h3,
-h4 {
-  font-family: 'Outfit', sans-serif;
-  color: var(--primary-sage);
+#root {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+.apk-container {
+  width: 100%;
+  max-width: 450px;
+  height: 100vh;
+  background-color: var(--bg-color);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--shadow-premium);
 }
 
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
-  transition: all 0.2s ease;
-}
-
-input {
-  font-family: inherit;
-}
-
-/* Base card style - Flat and clean */
-.wellness-card {
-  background: var(--white);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 2.5rem;
-  box-shadow: var(--shadow-subtle);
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
+@media (max-width: 450px) {
+  .apk-container {
+    max-width: 100%;
   }
 }
 
-.animate-in {
-  animation: slideUp 0.5s ease forwards;
+.scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 20px 40px;
+  scrollbar-width: none;
 }
 
+.scroll-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* Base Card */
+.android-card {
+  background-color: var(--surface-color);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border-subtle);
+}
+
+/* Markdown Styling */
+.markdown-content strong {
+  font-weight: 700;
+  color: var(--accent-primary);
+  /* Use a slightly different font for emphasis if needed */
+}
+
+.markdown-content em {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-style: italic;
+  color: var(--accent-secondary);
+}
+
+.markdown-content p {
+  margin-bottom: 20px;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+
+.markdown-content li {
+  margin-bottom: 8px;
+}
+
+/* Animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px) scale(0.98);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
-.fade-in-up {
-  animation: fadeInUp 0.6s ease forwards;
+.animate-reveal {
+  animation: fadeInUp 0.7s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
 @keyframes pulse {
   0% {
-    opacity: 1;
+    opacity: 0.6;
   }
 
   50% {
-    opacity: 0.5;
+    opacity: 0.3;
   }
 
   100% {
-    opacity: 1;
+    opacity: 0.6;
   }
 }
 
-.animate-pulse {
-  animation: pulse 1.5s ease-in-out infinite;
+.shimmer {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+/* Buttons */
+.btn-main {
+  background-color: var(--accent-primary);
+  color: var(--surface-color);
+  border: none;
+  border-radius: var(--radius-pill);
+  height: 60px;
+  padding: 0 32px;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.btn-main:active {
+  transform: scale(0.94);
+}
+
+.btn-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 100px;
+  background-color: var(--surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-icon:active {
+  background-color: var(--border-subtle);
 }
