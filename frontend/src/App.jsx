@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Result from './components/Result';
+import LoadingState from './components/LoadingState';
 import { askQuestion } from './services/api.service';
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
       const data = await askQuestion(query);
       setResult(data);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'An unexpected error occurred.');
       console.error(err);
     } finally {
       setLoading(false);
@@ -31,6 +32,8 @@ function App() {
       <main style={styles.main}>
         <Hero onSearch={handleSearch} loading={loading} />
 
+        {loading && <LoadingState />}
+
         {error && (
           <div className="container" style={styles.errorContainer}>
             <div style={styles.errorCard}>
@@ -39,7 +42,7 @@ function App() {
           </div>
         )}
 
-        {result && <Result key={result.queryId || 'initial'} data={result} />}
+        {!loading && result && <Result key={result.queryId || 'initial'} data={result} />}
       </main>
 
       <footer style={styles.footer}>
