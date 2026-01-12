@@ -12,8 +12,8 @@ A professional, local-first wellness application featuring a robust RAG (Retriev
 ## Architectural Decisions & Justifications
 
 ### 1. Large Language Model (LLM): Google Gemini
-- **Choice**: Google Gemini 1.5 Pro / Flash.
-- **Justification**: Offers industry-leading context windows and competitive reasoning capabilities. It is the core motor for generating context-aware wellness responses.
+- **Choice**: Google Gemini Flash (Latest).
+- **Justification**: Verified as the most stable and performant model version for this environment's API tier.
 
 ### 2. Chunking Strategy: Heuristic Token-Aware Sliding Window
 - **Choice**: GPT-3 BPE Tokenization proxy with 400-token chunks and 50-token overlap.
@@ -44,12 +44,33 @@ A professional, local-first wellness application featuring a robust RAG (Retriev
   - **Reliability**: Deterministic matching for high-risk topics (pregnancy, surgery, acute conditions) ensures consistent safety disclaimers.
   - **Ethics**: Explicitly prevents medical advice while suggesting gentle, safe alternatives.
   - **Efficiency**: Near-zero latency, running locally before any network calls.
+- **Deterministic Response Justification**: For high-risk medical/safety queries (e.g., surgery), the system purposefully uses a fixed, word-for-word response rather than AI generation. This ensures 100% safety and legal compliance, preventing the "hallucination" or "playful rephrasing" of critical medical disclaimers.
 
 ### 7. Retrieval Service: Semantic Search
 - **Choice**: Multi-stage retrieval (Embed Query -> Vector Search -> Top-K Rank).
 - **Justification**:
   - **Precision**: Uses Gemini's `text-embedding-004` to ensure query-context alignment.
   - **Control**: By separating retrieval from generation, we can audit exactly what context is being passed to the LLM.
+
+### 8. LLM Prompt Design: Grounded Generation
+- **Choice**: Structured instruction template with explicit "System Role" and "Constraint" blocks.
+- **Justification**:
+  - **Hallucination Mitigation**: Uses "negative constraints" (e.g., "If answer is not in chunks, say I don't know") to prevent AI inventions.
+  - **Source Transparency**: Mandates citations within the response to build user trust.
+  - **Contextual Integrity**: Context is injected using specific labels ([Chunk 1], [Source]), allowing the LLM to reason over delimited data.
+
+### 9. Database Schema: Unified Interaction Model
+- **Choice**: Single `Query` document containing the full RAG lifecycle.
+- **Justification**:
+  - **Auditability**: Storing the user query, safety flags, and the exact chunks retrieved alongside the AI response allows for perfect debugging of the pipeline.
+  - **Feedback Loop**: Includes a structured feedback sub-document to enable future RLHF (Reinforcement Learning from Human Feedback) and system optimization.
+  - **Analytics**: Timestamps and metadata enable monitoring of system usage and safety-trigger frequencies.
+
+### 10. Logging Service: Atomic Persistence
+- **Choice**: Centralized asychronous logging service using Mongoose.
+- **Justification**:
+  - **Data Integrity**: Ensures every RAG interaction (from query to safety flag to response) is saved atomically for future auditing.
+  - **Observability**: Decouples business logic from persistence, allowing us to log failures gracefully without breaking the user experience.
 
 ---
 

@@ -20,6 +20,10 @@ app.get('/', (req, res) => {
   res.send('Wellness App API is running');
 });
 
+// RAG Routes
+const askRoutes = require('./routes/ask.routes');
+app.use('/ask', askRoutes);
+
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);
 });
