@@ -7,17 +7,31 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 // Middleware
-// Use standard CORS configuration that reflects the request origin
-// This handles Vercel preview URLs and production domains automatically
+const allowedOrigins = [
+  'https://wellness-rag-micro-app.vercel.app',
+  'https://wellness-rag-micro-app.vercel.app/',
+  'http://localhost:5173',
+  'http://localhost:3000'
+];
+
 app.use(cors({
-  origin: true, // Reflects the request origin
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      console.log('Blocked by CORS:', origin); // Log for debugging
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
-// Handle preflight requests explicitly if needed, but 'cors' usually handles it.
-// We add this to ensure 200 OK for Vercel if 204 causes issues (some legacy browsers)
+// Force preflight to always return 200 with headers to satisfy strict browsers
 app.options('*', cors());
 
 app.use(express.json());
