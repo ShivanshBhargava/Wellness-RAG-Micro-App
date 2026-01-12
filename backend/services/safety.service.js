@@ -68,6 +68,26 @@ class SafetyService {
     }
 
     /**
+     * Generates a gentle, safety-first response for high-risk queries.
+     * @param {string} reason - The specific reason for the safety flag.
+     * @returns {string} A formatted, professional response.
+     */
+    generateSafetyResponse(reason) {
+        return `
+Thank you for reaching out with your query. To ensure your well-being, I must prioritize caution:
+
+**Safety Context:** ${reason}
+
+While I cannot provide medical advice or specific sequences for your situation, I can recommend some universally gentle alternatives that focus on mindfulness and relaxation:
+- **Restful Stillness**: Savasana (Corpse Pose) for total physical relaxation.
+- **Centering**: Balasana (Child's Pose) to soothe the nervous system.
+- **Gentle Breath**: Simple, natural deep breathing without any retention.
+
+**Recommendation:** Please consult with a healthcare professional or a certified yoga therapist who can provide a personalized assessment and safe guidance tailored to your specific needs.
+        `.trim();
+    }
+
+    /**
      * Helper to check if any keyword from a list exists in the text.
      */
     _containsKeywords(text, keywords) {
@@ -80,3 +100,4 @@ class SafetyService {
 }
 
 module.exports = new SafetyService();
+
