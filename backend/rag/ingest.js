@@ -20,7 +20,7 @@ async function ingest() {
         await vectorStore.initialize();
 
         // Load chunks
-        const chunksPath = path.join(__dirname, 'yoga_chunks.json');
+        const chunksPath = path.join(__dirname, '../../rag/yoga_chunks.json');
         const chunks = JSON.parse(fs.readFileSync(chunksPath, 'utf8'));
 
         console.log(`Loading ${chunks.length} chunks from ${chunksPath}...`);
