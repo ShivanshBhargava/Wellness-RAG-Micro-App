@@ -45,6 +45,7 @@ const QuerySchema = new mongoose.Schema({
     // Why: This is the "Closed Loop" for RAG. It allows us to perform
     // RLHF (Reinforcement Learning from Human Feedback) or basic quality analytics.
     feedback: {
+        isHelpful: { type: Boolean },
         rating: { type: Number, min: 1, max: 5 }, // 1-5 star rating
         comment: { type: String, trim: true },
         receivedAt: { type: Date }

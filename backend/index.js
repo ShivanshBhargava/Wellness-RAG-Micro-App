@@ -22,7 +22,9 @@ app.get('/', (req, res) => {
 
 // RAG Routes
 const askRoutes = require('./routes/ask.routes');
+const feedbackRoutes = require('./routes/feedback.routes');
 app.use('/ask', askRoutes);
+app.use('/feedback', feedbackRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);

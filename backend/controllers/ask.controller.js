@@ -26,7 +26,7 @@ exports.handleAsk = async (req, res) => {
             const safetyFirstAnswer = safetyService.generateSafetyResponse(safetyResult.reason);
 
             // Log the interaction even if it's unsafe
-            await loggingService.logInteraction({
+            const logEntry = await loggingService.logInteraction({
                 userQuery: query,
                 retrievedChunks: [],
                 aiResponse: safetyFirstAnswer,
@@ -36,7 +36,8 @@ exports.handleAsk = async (req, res) => {
             return res.status(200).json({
                 answer: safetyFirstAnswer,
                 sources: [],
-                isUnsafe: true
+                isUnsafe: true,
+                queryId: logEntry ? logEntry._id : null
             });
         }
 
@@ -53,7 +54,7 @@ exports.handleAsk = async (req, res) => {
         // 4. MONGODB LOGGING
         // We don't await this to avoid delaying the response to the user,
         // unless you want strict consistency. Here we do to ensure atomic writes as requested.
-        await loggingService.logInteraction({
+        const logEntry = await loggingService.logInteraction({
             userQuery: query,
             retrievedChunks: contextChunks,
             aiResponse: aiAnswer,
@@ -64,7 +65,8 @@ exports.handleAsk = async (req, res) => {
         res.status(200).json({
             answer: aiAnswer,
             sources: sources,
-            isUnsafe: false
+            isUnsafe: false,
+            queryId: logEntry ? logEntry._id : null
         });
 
     } catch (error) {
