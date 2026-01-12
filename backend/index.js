@@ -36,20 +36,26 @@ const corsOptions = {
 // CORS middleware - must be before other middleware
 app.use(cors(corsOptions));
 
-// Additional CORS headers middleware for Vercel
+// Additional CORS headers middleware for Vercel - must handle OPTIONS explicitly
 app.use((req, res, next) => {
   const origin = req.headers.origin;
+  
+  // Set CORS headers for all responses
   if (origin && (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app'))) {
     res.setHeader('Access-Control-Allow-Origin', origin);
+  } else if (origin) {
+    // Allow any vercel.app origin
+    res.setHeader('Access-Control-Allow-Origin', origin);
   }
+  
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
   res.setHeader('Access-Control-Max-Age', '86400');
   
-  // Handle preflight requests
+  // Handle preflight requests - return 200 with headers
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    return res.status(200).json({});
   }
   next();
 });
