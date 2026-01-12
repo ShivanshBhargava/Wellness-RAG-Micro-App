@@ -45,6 +45,12 @@ A professional, local-first wellness application featuring a robust RAG (Retriev
   - **Ethics**: Explicitly prevents medical advice while suggesting gentle, safe alternatives.
   - **Efficiency**: Near-zero latency, running locally before any network calls.
 
+### 7. Retrieval Service: Semantic Search
+- **Choice**: Multi-stage retrieval (Embed Query -> Vector Search -> Top-K Rank).
+- **Justification**:
+  - **Precision**: Uses Gemini's `text-embedding-004` to ensure query-context alignment.
+  - **Control**: By separating retrieval from generation, we can audit exactly what context is being passed to the LLM.
+
 ---
 
 ## Getting Started (Backend)
