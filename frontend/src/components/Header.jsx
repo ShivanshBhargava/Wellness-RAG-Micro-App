@@ -1,18 +1,20 @@
 import React from 'react';
-import { Leaf } from 'lucide-react';
 
 const Header = () => {
     return (
         <header style={styles.header}>
             <div className="container" style={styles.container}>
                 <div style={styles.logo}>
-                    <Leaf color="#3d5a44" size={28} />
-                    <h1 style={styles.title}>VedaFlow</h1>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4b6352" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 2L3 9v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span style={styles.brand}>VEDAFLOW</span>
                 </div>
                 <nav style={styles.nav}>
-                    <a href="#" style={styles.link}>Yoga Guide</a>
-                    <a href="#" style={styles.link}>My Vitality</a>
-                    <a href="#" style={styles.link}>About</a>
+                    <button style={styles.navItem}>JOURNAL</button>
+                    <button style={styles.navItem}>PRACTICE</button>
+                    <button style={styles.navItem}>LOG IN</button>
                 </nav>
             </div>
         </header>
@@ -21,37 +23,41 @@ const Header = () => {
 
 const styles = {
     header: {
-        padding: '1.5rem 0',
-        backgroundColor: '#fcfbf7',
-        borderBottom: '1px solid rgba(0,0,0,0.05)',
+        backgroundColor: '#ffffff',
+        borderBottom: '1px solid #e2e8e2',
+        height: '72px',
+        display: 'flex',
+        alignItems: 'center',
         position: 'sticky',
         top: 0,
-        zIndex: 10,
+        zIndex: 100,
     },
     container: {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
+        width: '100%',
     },
     logo: {
         display: 'flex',
         alignItems: 'center',
-        gap: '0.75rem',
+        gap: '12px',
     },
-    title: {
-        fontSize: '1.5rem',
-        color: '#3d5a44',
+    brand: {
+        fontSize: '0.9rem',
+        fontWeight: '700',
+        letterSpacing: '0.15em',
+        color: '#4b6352',
     },
     nav: {
         display: 'flex',
-        gap: '2rem',
+        gap: '32px',
     },
-    link: {
-        textDecoration: 'none',
-        color: '#2c332e',
-        fontSize: '0.9rem',
-        fontWeight: 500,
-        transition: 'color 0.2s',
+    navItem: {
+        fontSize: '0.75rem',
+        fontWeight: '600',
+        letterSpacing: '0.1em',
+        color: '#636e72',
     }
 };
 

@@ -1,44 +1,37 @@
 import React, { useState } from 'react';
-import { Search, Sparkles } from 'lucide-react';
 
 const Hero = ({ onSearch, loading }) => {
     const [query, setQuery] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (query.trim()) {
+        if (query.trim() && !loading) {
             onSearch(query);
         }
     };
 
     return (
-        <section style={styles.hero}>
-            <div className="container" style={styles.container}>
-                <div style={styles.content}>
-                    <h2 style={styles.heading}>Discover Ancient Wisdom for Modern Balance</h2>
-                    <p style={styles.subheading}>Ask about authentic yoga practices, benefits, and mindful guidance.</p>
-                </div>
+        <section style={styles.section}>
+            <div className="container">
+                <h1 style={styles.title}>Knowledge for your well-being.</h1>
+                <p style={styles.subtitle}>Ask a question about yoga philosophy, geometry, or breathwork.</p>
 
-                <form onSubmit={handleSubmit} style={styles.searchContainer}>
-                    <div style={styles.searchWrapper}>
-                        <Search style={styles.searchIcon} color="#3d5a44" size={20} />
-                        <input
-                            type="text"
-                            placeholder="e.g., How do I stay balanced in Tree Pose?"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            style={styles.input}
-                            disabled={loading}
-                        />
-                        <button type="submit" style={styles.button} disabled={loading || !query.trim()}>
-                            {loading ? 'Seeking...' : (
-                                <>
-                                    <Sparkles size={16} />
-                                    <span>Discover</span>
-                                </>
-                            )}
-                        </button>
-                    </div>
+                <form onSubmit={handleSubmit} style={styles.form}>
+                    <input
+                        type="text"
+                        style={styles.input}
+                        placeholder="Search our wisdom library..."
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        disabled={loading}
+                    />
+                    <button
+                        type="submit"
+                        style={{ ...styles.button, ...(loading || !query.trim() ? styles.buttonDisabled : {}) }}
+                        disabled={loading || !query.trim()}
+                    >
+                        {loading ? 'CONSULTING...' : 'SEARCH'}
+                    </button>
                 </form>
             </div>
         </section>
@@ -46,65 +39,49 @@ const Hero = ({ onSearch, loading }) => {
 };
 
 const styles = {
-    hero: {
-        padding: '6rem 0 4rem',
+    section: {
+        padding: '80px 0 60px',
         textAlign: 'center',
     },
-    container: {
+    title: {
+        fontSize: '2.5rem',
+        marginBottom: '12px',
+        color: '#4b6352',
+    },
+    subtitle: {
+        fontSize: '1rem',
+        color: '#636e72',
+        marginBottom: '48px',
+    },
+    form: {
         display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '3rem',
-    },
-    content: {
-        maxWidth: '600px',
-    },
-    heading: {
-        fontSize: '3rem',
-        lineHeight: 1.2,
-        marginBottom: '1rem',
-        color: '#3d5a44',
-    },
-    subheading: {
-        fontSize: '1.25rem',
-        color: '#2c332e',
-        opacity: 0.8,
-    },
-    searchContainer: {
-        width: '100%',
-        maxWidth: '700px',
-    },
-    searchWrapper: {
-        display: 'flex',
-        alignItems: 'center',
-        backgroundColor: '#ffffff',
-        padding: '0.5rem 0.5rem 0.5rem 1.5rem',
-        borderRadius: '100px',
-        boxShadow: '0 10px 30px rgba(61, 90, 68, 0.08)',
-        border: '1px solid rgba(61, 90, 68, 0.1)',
-        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-    },
-    searchIcon: {
-        marginRight: '1rem',
-        opacity: 0.6,
+        gap: '12px',
+        maxWidth: '650px',
+        margin: '0 auto',
     },
     input: {
         flex: 1,
-        border: 'none',
-        fontSize: '1.1rem',
-        color: '#2c332e',
-        background: 'transparent',
+        height: '52px',
+        padding: '0 20px',
+        fontSize: '1rem',
+        border: '1px solid #e2e8e2',
+        borderRadius: '4px',
+        backgroundColor: '#ffffff',
+        color: '#2d3436',
     },
     button: {
-        backgroundColor: '#3d5a44',
+        height: '52px',
+        padding: '0 32px',
+        backgroundColor: '#4b6352',
         color: '#ffffff',
-        padding: '0.8rem 1.5rem',
-        borderRadius: '100px',
-        fontWeight: 600,
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.5rem',
-        transition: 'background-color 0.2s, transform 0.2s',
+        fontWeight: '600',
+        fontSize: '0.8rem',
+        letterSpacing: '0.1em',
+        borderRadius: '4px',
+    },
+    buttonDisabled: {
+        backgroundColor: '#e2e8e2',
+        cursor: 'not-allowed',
     }
 };
 

@@ -1,212 +1,167 @@
 import React, { useState } from 'react';
-import { ExternalLink, ThumbsUp, ThumbsDown, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { submitFeedback } from '../services/api.service';
 
 const Result = ({ data }) => {
-    const [feedbackGiven, setFeedbackGiven] = useState(false);
-    const [feedbackLoading, setFeedbackLoading] = useState(false);
+    const [feedbackStatus, setFeedbackStatus] = useState(null);
 
     if (!data) return null;
 
     const { answer, sources, isUnsafe, queryId } = data;
 
     const handleFeedback = async (helpful) => {
-        if (!queryId || feedbackGiven) return;
-        setFeedbackLoading(true);
+        if (!queryId || feedbackStatus) return;
         try {
             await submitFeedback(queryId, helpful);
-            setFeedbackGiven(true);
+            setFeedbackStatus(helpful ? 'positive' : 'negative');
         } catch (err) {
-            console.error(err);
-        } finally {
-            setFeedbackLoading(false);
+            console.error('Feedback failed:', err.message);
         }
     };
 
     return (
-        <div className="container" style={styles.container}>
-            <div style={{ ...styles.card, ...(isUnsafe ? styles.unsafeCard : {}) }}>
-                {isUnsafe && (
-                    <div style={styles.safetyHeader}>
-                        <AlertCircle size={20} color="#c0392b" />
-                        <span style={styles.safetyText}>Safety Guidance</span>
+        <div className="container animate-in" style={styles.container}>
+            {isUnsafe && (
+                <div style={styles.warningBanner}>
+                    <svg style={styles.warningIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <span style={styles.warningText}>Safety Consideration: Professional consultation is advised for medical queries.</span>
+                </div>
+            )}
+
+            <article className="wellness-card">
+                <div style={styles.content}>
+                    {answer.split('\n').map((line, i) => (
+                        <p key={i} style={styles.paragraph}>{line}</p>
+                    ))}
+                </div>
+
+                {!isUnsafe && sources && sources.length > 0 && (
+                    <div style={styles.sourcesWrapper}>
+                        <h4 style={styles.sourcesHeading}>REFERENCES</h4>
+                        <ul style={styles.sourcesList}>
+                            {sources.map((source, i) => (
+                                <li key={i} style={styles.sourceItem}>
+                                    <a href={source.link} target="_blank" rel="noopener noreferrer" style={styles.sourceLink}>
+                                        {source.title}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 )}
 
-                <div style={styles.answerContent}>
-                    <div style={styles.answerText}>
-                        {answer.split('\n').map((para, i) => para.trim() && (
-                            <p key={i} style={styles.paragraph}>{para}</p>
-                        ))}
-                    </div>
-
-                    {!isUnsafe && sources && sources.length > 0 && (
-                        <div style={styles.sourcesContainer}>
-                            <h4 style={styles.sectionTitle}>Sourced from:</h4>
-                            <div style={styles.sourcesList}>
-                                {sources.map((source, i) => (
-                                    <a key={i} href={source.link} target="_blank" rel="noopener noreferrer" style={styles.sourceTag}>
-                                        <span>{source.title}</span>
-                                        <ExternalLink size={12} />
-                                    </a>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-
                 <div style={styles.footer}>
-                    <div style={styles.feedbackSection}>
-                        <span style={styles.feedbackTitle}>Was this helpful?</span>
-                        <div style={styles.feedbackButtons}>
-                            <button
-                                onClick={() => handleFeedback(true)}
-                                style={{ ...styles.feedbackBtn, ...(feedbackGiven === true ? styles.activeFeedback : {}) }}
-                                disabled={feedbackGiven || feedbackLoading}
-                            >
-                                <ThumbsUp size={16} />
-                            </button>
-                            <button
-                                onClick={() => handleFeedback(false)}
-                                style={{ ...styles.feedbackBtn, ...(feedbackGiven === false ? styles.activeFeedback : {}) }}
-                                disabled={feedbackGiven || feedbackLoading}
-                            >
-                                <ThumbsDown size={16} />
-                            </button>
-                        </div>
-                        {feedbackGiven && (
-                            <span style={styles.feedbackSuccess}>
-                                <CheckCircle2 size={14} /> Thank you!
-                            </span>
-                        )}
-                    </div>
-                    <div style={styles.timestamp}>
-                        Verified by VedaFlow RAG
+                    <div style={styles.feedback}>
+                        <span style={styles.feedbackLabel}>Helpful?</span>
+                        <button
+                            onClick={() => handleFeedback(true)}
+                            style={{ ...styles.feedbackBtn, ...(feedbackStatus === 'positive' ? styles.feedbackBtnActive : {}) }}
+                        >
+                            YES
+                        </button>
+                        <button
+                            onClick={() => handleFeedback(false)}
+                            style={{ ...styles.feedbackBtn, ...(feedbackStatus === 'negative' ? styles.feedbackBtnActive : {}) }}
+                        >
+                            NO
+                        </button>
                     </div>
                 </div>
-            </div>
+            </article>
         </div>
     );
 };
 
 const styles = {
     container: {
-        paddingBottom: '6rem',
-        marginTop: ' -2rem',
-        opacity: 0,
-        animation: 'fadeInUp 0.6s ease forwards',
+        paddingBottom: '100px',
     },
-    card: {
-        backgroundColor: '#ffffff',
-        borderRadius: '24px',
-        padding: '2.5rem',
-        boxShadow: '0 10px 40px rgba(0,0,0,0.03)',
-        border: '1px solid rgba(0,0,0,0.03)',
-    },
-    unsafeCard: {
-        borderColor: 'rgba(192, 57, 43, 0.1)',
-        backgroundColor: '#fff9f9',
-    },
-    safetyHeader: {
+    warningBanner: {
+        backgroundColor: '#fff5f5',
+        border: '1px solid #fab1a0',
+        borderRadius: '4px',
+        padding: '12px 20px',
+        marginBottom: '20px',
         display: 'flex',
         alignItems: 'center',
-        gap: '0.75rem',
-        marginBottom: '1.5rem',
-        padding: '0.75rem 1.25rem',
-        backgroundColor: 'rgba(192, 57, 43, 0.05)',
-        borderRadius: '12px',
-        width: 'fit-content',
+        gap: '12px',
     },
-    safetyText: {
-        color: '#c0392b',
-        fontWeight: 600,
-        fontSize: '0.9rem',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em',
+    warningIcon: {
+        color: '#d63031',
     },
-    answerText: {
-        fontSize: '1.15rem',
-        color: '#2c332e',
-        lineHeight: 1.7,
+    warningText: {
+        color: '#d63031',
+        fontSize: '0.85rem',
+        fontWeight: '500',
+    },
+    content: {
+        marginBottom: '40px',
     },
     paragraph: {
-        marginBottom: '1.25rem',
+        marginBottom: '1.5rem',
+        fontSize: '1.05rem',
+        color: '#2d3436',
     },
-    sourcesContainer: {
-        marginTop: '2.5rem',
-        paddingTop: '2rem',
-        borderTop: '1px solid rgba(0,0,0,0.05)',
+    sourcesWrapper: {
+        borderTop: '1px solid #e2e8e2',
+        paddingTop: '24px',
+        marginBottom: '32px',
     },
-    sectionTitle: {
-        fontSize: '0.9rem',
-        color: '#3d5a44',
-        textTransform: 'uppercase',
-        letterSpacing: '0.1em',
-        marginBottom: '1rem',
+    sourcesHeading: {
+        fontSize: '0.7rem',
+        fontWeight: '700',
+        letterSpacing: '0.15em',
+        color: '#b28a5d',
+        marginBottom: '16px',
     },
     sourcesList: {
+        listStyle: 'none',
         display: 'flex',
-        flexWrap: 'wrap',
-        gap: '0.75rem',
+        flexDirection: 'column',
+        gap: '8px',
     },
-    sourceTag: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.5rem',
-        padding: '0.5rem 1rem',
-        backgroundColor: '#f1f4f2',
-        color: '#3d5a44',
-        borderRadius: '100px',
+    sourceItem: {
+        fontSize: '0.9rem',
+    },
+    sourceLink: {
+        color: '#4b6352',
         textDecoration: 'none',
-        fontSize: '0.85rem',
-        fontWeight: 500,
-        transition: 'background-color 0.2s',
+        borderBottom: '1px solid transparent',
+        transition: 'border-color 0.2s',
     },
     footer: {
-        marginTop: '3rem',
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        borderTop: '1px solid rgba(0,0,0,0.05)',
-        paddingTop: '1.5rem',
+        paddingTop: '20px',
+        borderTop: '1px solid #f2f2f2',
     },
-    feedbackSection: {
+    feedback: {
         display: 'flex',
         alignItems: 'center',
-        gap: '1rem',
+        gap: '16px',
     },
-    feedbackTitle: {
-        fontSize: '0.9rem',
-        opacity: 0.6,
-    },
-    feedbackButtons: {
-        display: 'flex',
-        gap: '0.5rem',
+    feedbackLabel: {
+        fontSize: '0.8rem',
+        fontWeight: '600',
+        color: '#636e72',
     },
     feedbackBtn: {
-        padding: '0.5rem',
-        borderRadius: '8px',
-        backgroundColor: '#fcfbf7',
-        color: '#3d5a44',
-        transition: 'all 0.2s',
+        fontSize: '0.7rem',
+        fontWeight: '700',
+        letterSpacing: '0.1em',
+        color: '#4b6352',
+        padding: '4px 12px',
+        border: '1px solid #e2e8e2',
+        borderRadius: '4px',
     },
-    activeFeedback: {
-        backgroundColor: '#3d5a44',
+    feedbackBtnActive: {
+        backgroundColor: '#4b6352',
         color: '#ffffff',
-    },
-    feedbackSuccess: {
-        fontSize: '0.85rem',
-        color: '#3d5a44',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.3rem',
-        fontWeight: 500,
-    },
-    timestamp: {
-        fontSize: '0.8rem',
-        color: '#3d5a44',
-        opacity: 0.4,
-        fontStyle: 'italic',
+        borderColor: '#4b6352',
     }
 };
 
