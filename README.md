@@ -185,10 +185,8 @@ This project was built using an AI Agent (Antigravity). Below is a summary of th
 | **Monorepo Init** | "Initialize a professional monorepo" | Created structure: `frontend/`, `backend/`, `rag/`. Configured Vite & Express. |
 | **Zen UI Design** | "Use Rich Aesthetics... Zen Slate" | Implemented `framer-motion` animations, glassmorphism, and custom "Yoga Silhouette" hero. |
 | **RAG Engine** | "Build a RAG pipeline for yoga" | Wrote `ingest.js` (Chunking/Embedding), `retrieval.service.js` (Cosine Sim), and connected Gemini API. |
-| **Safety Fix** | "Prevent medical advice" | Implemented `SafetyService` with regex guardrails to intercept specific keywords before AI processing. |
+| **Safety Guardrails** | "Prevent medical advice" | Implemented `SafetyService` with regex guardrails to intercept specific keywords before AI processing. |
 | **Debugging 500** | "Fix 500 Internal Server Error" | Diagnosed missing `vector_index.json` & outdated model name (`gemini-1.5-flash` -> `gemini-2.5-flash`). |
-| **Persistence** | "Feedback buttons not highlighting" | Updated `FeedbackSection.jsx` to sync state with `App.jsx` and persist choices via MongoDB ID tracking. |
-| **Deployment** | "Fix Vercel deployment error" | Refactored `backend/index.js` for proper serverless rewrites and fixed CORS configuration. |
 
 
 ---
