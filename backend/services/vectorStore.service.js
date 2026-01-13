@@ -12,18 +12,39 @@ const INDEX_FILE = path.join(__dirname, '../rag/vector_index.json');
 class VectorStoreService {
     constructor() {
         this.items = [];
-        this.loadIndex();
+        this._loaded = false;
     }
 
     loadIndex() {
+        if (this._loaded) {
+            return;
+        }
+        
         try {
             // Using require() ensures Vercel's bundler includes the file in the deployment automatically
             // This is crucial for Serverless Function bundling
-            this.items = require('../rag/vector_index.json');
-            console.log(`Loaded ${this.items.length} items from local vector store.`);
+            const indexPath = path.join(__dirname, '../rag/vector_index.json');
+            
+            // Try require first (for bundled files in Vercel)
+            try {
+                this.items = require('../rag/vector_index.json');
+                console.log(`Loaded ${this.items.length} items from vector store (via require).`);
+            } catch (requireErr) {
+                // Fallback to fs.readFileSync for local development
+                if (fs.existsSync(indexPath)) {
+                    const data = fs.readFileSync(indexPath, 'utf8');
+                    this.items = JSON.parse(data);
+                    console.log(`Loaded ${this.items.length} items from vector store (via fs).`);
+                } else {
+                    throw new Error('Vector index file not found');
+                }
+            }
+            this._loaded = true;
         } catch (err) {
-            console.warn('Vector store not found or empty. Please run ingestion if running locally.');
+            console.warn('Vector store not found or empty:', err.message);
+            console.warn('Please ensure vector_index.json exists in rag/ directory.');
             this.items = [];
+            this._loaded = true; // Mark as loaded to prevent retry loops
         }
     }
 
@@ -53,6 +74,11 @@ class VectorStoreService {
     }
 
     async search(queryEmbedding, topK = 3) {
+        // Lazy load the index if not already loaded
+        if (!this._loaded) {
+            this.loadIndex();
+        }
+        
         if (!this.items.length) {
             console.warn('Vector store is empty. Please run ingestion first.');
             return [];

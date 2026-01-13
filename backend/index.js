@@ -36,10 +36,17 @@ app.options('*', cors());
 
 app.use(express.json());
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+// MongoDB Connection - with better error handling for serverless
+if (process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log('MongoDB connected successfully'))
+    .catch((err) => {
+      console.error('MongoDB connection error:', err.message);
+      // Don't crash the app if MongoDB fails - logging is optional
+    });
+} else {
+  console.warn('MONGODB_URI not set - logging will be disabled');
+}
 
 // Basic route for testing
 app.get('/', (req, res) => {
@@ -51,14 +58,28 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// RAG Routes
-const askRoutes = require('./routes/ask.routes');
-const feedbackRoutes = require('./routes/feedback.routes');
-app.use('/ask', askRoutes);
-app.use('/feedback', feedbackRoutes);
+// RAG Routes - wrap in try-catch to prevent crashes
+try {
+  const askRoutes = require('./routes/ask.routes');
+  const feedbackRoutes = require('./routes/feedback.routes');
+  app.use('/ask', askRoutes);
+  app.use('/feedback', feedbackRoutes);
+} catch (error) {
+  console.error('Error loading routes:', error.message);
+  // Add fallback route to show error
+  app.use('/ask', (req, res) => {
+    res.status(500).json({ error: 'Routes failed to load. Check server logs.' });
+  });
+  app.use('/feedback', (req, res) => {
+    res.status(500).json({ error: 'Routes failed to load. Check server logs.' });
+  });
+}
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port: ${PORT}`);
-});
+// Only start server if not in Vercel (serverless) environment
+if (process.env.VERCEL !== '1' && !process.env.VERCEL_ENV) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port: ${PORT}`);
+  });
+}
 
 module.exports = app;
