@@ -192,6 +192,20 @@ This project was built using an AI Agent (Antigravity). Below is a summary of th
 ---
 
 
+## What AI Did Not Do
+
+While the AI Agent (Antigravity) accelerated development, the following critical tasks were handled by the Human Developer:
+
+1.  **API Key Management**: The generation and security of the Google Gemini API keys and MongoDB connection strings were managed manually by the user.
+2.  **Vercel Project Configuration**: The actual creation of the project on the Vercel Dashboard and the linking of the GitHub repository was a human-led process.
+3.  **Android Build Environment**: Setting up Android Studio, the SDKs, and the physical device/emulator for testing the Capacitor build was outside the AI's jurisdiction.
+4.  **Content Curation**: The raw yoga knowledge (articles) used for RAG ingestion was provided as a foundational dataset, not invented by the AI.
+
+
+
+---
+
+
 ## Mobile Support (Capacitor)
 
 The project is pre-configured for Android conversion.
