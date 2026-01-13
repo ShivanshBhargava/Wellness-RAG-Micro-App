@@ -186,7 +186,7 @@ This project was built using an AI Agent (Antigravity). Below is a summary of th
 | **Zen UI Design** | "Use Rich Aesthetics... Zen Slate" | Implemented `framer-motion` animations, glassmorphism, and custom "Yoga Silhouette" hero. |
 | **RAG Engine** | "Build a RAG pipeline for yoga" | Wrote `ingest.js` (Chunking/Embedding), `retrieval.service.js` (Cosine Sim), and connected Gemini API. |
 | **Safety Guardrails** | "Prevent medical advice" | Implemented `SafetyService` with regex guardrails to intercept specific keywords before AI processing. |
-| **Debugging 500** | "Fix 500 Internal Server Error" | Diagnosed missing `vector_index.json` & outdated model name (`gemini-1.5-flash` -> `gemini-2.5-flash`). |
+| **Debugging AI model** | "Fix 500 Internal Server Error due to outdated model name" | Diagnosed missing `vector_index.json` & outdated model name (`gemini-1.5-flash` -> `gemini-2.5-flash`). |
 
 
 ---
