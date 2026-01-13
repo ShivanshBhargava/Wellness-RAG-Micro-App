@@ -3,23 +3,13 @@
   "appName": "VedaFlow",
   "webDir": "dist",
   "server": {
-    "androidScheme": "https",
-    "hostname": "localhost",
-    "cleartext": true
+    "url": "https://wellness-rag-micro-app.vercel.app",
+    "cleartext": false
   },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 2000,
       "backgroundColor": "#ffffff"
-    }
-  },
-  "android": {
-    "buildOptions": {
-      "keystorePath": "",
-      "keystorePassword": "",
-      "keystoreAlias": "",
-      "keystoreAliasPassword": "",
-      "releaseType": "AAB"
     }
   }
 }

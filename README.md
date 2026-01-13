@@ -2,98 +2,165 @@
 
 VedaFlow is a premium, local-first wellness application that synthesizes traditional yoga wisdom with advanced RAG (Retrieval-Augmented Generation) technology. It offers grounded, safe, and context-aware yoga guidance in a "Zen Slate" digital environment.
 
-## 🌟 Key Features
+---
 
-### 🧘‍♂️ **Zen Slate Interface**
-- **Atmospheric Design**: A calm, premium aesthetic using "Zen Slate" dark modes, soft gradients, and glassmorphism.
-- **Dynamic Visuals**: Features an animated mandala aura and a custom Yoga Silhouette hero section that breathes with the user.
-- **Micro-Interactions**: Smooth Framer Motion transitions, spring-physics buttons, and reactive hover states.
+## 🏗️ Project Overview
 
-### 🧠 **Grounded AI Guidance**
-- **RAG Pipeline**: Responses are generated using a custom Retrieval-Augmented Generation engine powered by Gemini 2.5 Flash and a local vector store.
-- **Safety First**: Deterministic guardrails instantly detect high-risk queries (injury, acute pain) and provide safe, non-medical advice.
-- **Verified Sources**: Every response cites specific "Knowledge Chunks" from the curated Veda library, building trust through transparency.
+**VedaFlow** is designed as a Micro-App demonstrating the power of **Retrieval-Augmented Generation (RAG)** in the wellness domain. Unlike generic chatbots, VedaFlow:
+1.  **Retrieves** verified instructions from a curated "Vekda Library" (JSON-based knowledge store).
+2.  **Augments** the AI prompt with relevant "Knowledge Chunks".
+3.  **Generates** grounded responses citing specific sources.
+4.  **Safeguards** users by filtering medical emergencies deterministically.
 
-### ⚡ **High-Performance Interaction**
-- **Instant Response**: Optimized backend architecture delivers answers immediately while handling logging in the background.
-- **Streaming Typography**: Custom typewriter effects render text in natural, readable chunks.
-- **Persistent Feedback**: State-aware feedback mechanism allows users to rate responses, with selections persisting via database synchronization.
+**Tech Stack:**
+*   **Frontend**: React + Vite + Framer Motion (Zen Slate UI).
+*   **Backend**: Node.js + Express (REST API).
+*   **AI Engine**: Google Gemini 2.5 Flash + text-embedding-004.
+*   **Database**: MongoDB (Logs & Feedback) + Local JSON Vector Store (Embeddings).
 
 ---
 
-## 🏗️ Project Architecture
+## ⚙️ Setup Instructions
 
-### 1. Frontend (Vite + React)
-- **Framework**: React 18 with Vite for blazing fast HMR.
-- **Styling**: Pure CSS Modules & Global Variables for the "Zen Slate" theme.
-- **Animation**: `framer-motion` for complex orchestrations (entrance, exit, layout capability).
-- **Icons**: `lucide-react` for consistent, lightweight iconography.
+### 1. Prerequisites
+*   Node.js (v18+)
+*   MongoDB (Must be running locally on port 27017 or provide a cloud URI)
+*   Google Gemini API Key (Get at [aistudio.google.com](https://aistudio.google.com/))
 
-### 2. Backend (Node.js + Express)
-- **API Design**: RESTful architecture separating Controllers, Services, and Routes.
-- **Vector Database**: Custom, dependency-free JSON vector store using `compute-cosine-similarity` for portability and stability.
-- **LLM Integration**: Google Gemini 2.5 Flash for high-speed, cost-effective inference.
-- **Logging**: Asynchronous MongoDB logging for full query-response auditing without latency penalties.
+### 2. Backend Configuration
+The backend orchestrates the RAG pipeline.
 
-### 3. RAG Strategy (Retrieval-Augmented Generation)
-- **Ingestion**: Custom sliding-window chunker (400 tokens) with heuristic overlap.
-- **Retrieval**: Semantic search using cosine similarity on `text-embedding-004` vectors.
-- **Prompt Engineering**: "Grounded Generation" template enforcing citation and safety constraints.
+```bash
+cd backend
+npm install
+```
 
----
+**Environment Variables (.env)**
+Create a `.env` file in `/backend`:
+```env
+PORT=5001
+GEMINI_API_KEY=your_key_here
+MONGODB_URI=mongodb://localhost:27017/wellness_db
+# Optional: Set to 'production' to enable strict logging
+NODE_ENV=development
+```
 
-## 🚀 Getting Started
+**Vector Database Ingestion**
+Before running the app, you must process the raw knowledge (articles) into vectors:
+```bash
+# Reads rag/yoga_articles.json -> Chunks -> Embeds -> Saves to rag/vector_index.json
+node rag/ingest.js
+```
+*Note: This generates a `vector_index.json` file (~800KB) which acts as the local vector database.*
 
-### Prerequisites
-- Node.js (v18+)
-- MongoDB (Running locally or via URI)
-- Google Gemini API Key
+**Start Server**
+```bash
+npm run dev
+# Server will run on http://localhost:5001
+```
 
-### Installation
+### 3. Frontend Configuration
+The frontend handles the "Zen Slate" UI.
 
-1. **Clone the Repository**
-   ```bash
-   git clone <repo-url>
-   cd WellnessApp
-   ```
+```bash
+cd frontend
+npm install
+```
 
-2. **Backend Setup**
-   ```bash
-   cd backend
-   npm install
-   # Create .env file with:
-   # GEMINI_API_KEY=your_key_here
-   # MONGODB_URI=mongodb://localhost:27017/wellness_db
-   
-   # Ingest the knowledge base
-   node rag/ingest.js
-   
-   # Start the server
-   npm run dev
-   ```
+**Environment Variables (.env)**
+Create a `.env` file in `/frontend`:
+```env
+# Point to your local backend
+VITE_API_BASE_URL=http://localhost:5001
+```
 
-3. **Frontend Setup**
-   ```bash
-   cd frontend
-   npm install
-   # Start the development server
-   npm run dev
-   ```
-
-4. **Access the App**
-   Open `http://localhost:5173` in your browser.
+**Start Client**
+```bash
+npm run dev
+# Client will run on http://localhost:5173
+```
 
 ---
 
-## 🔒 Safety & Ethics
+## 🧠 RAG Pipeline Architecture
 
-- **Deterministic Guardrails**: The system refuses to generate medical advice for high-risk inputs (e.g., "broken bone", "surgery"), defaulting to a hard-coded safety protocol.
-- **Source Transparency**: "Verified Library" badges and explicit citation links ensure users know exactly where their guidance comes from.
+Our RAG system follows a strict **"Retrieve-then-Generate"** protocol:
+
+1.  **Ingestion (`rag/ingest.js`)**:
+    *   **Chunking**: Raw text is split into sliding windows of 400 tokens with 50-token overlap to preserve context.
+    *   **Embedding**: Each chunk is passed to `text-embedding-004` to create a 768-dimensional vector.
+    *   **Storage**: Vectors + Metadata are stored in a flat JSON file (`vector_index.json`).
+
+2.  **Retrieval (`services/retrieval.service.js`)**:
+    *   User Query -> Embedded into Vector.
+    *   **Cosine Similarity**: Calculated against all stored chunks.
+    *   **Top-K**: The top 3 most relevant chunks are retrieved.
+
+3.  **Generation (`services/chat.service.js`)**:
+    *   Constructed Prompt: `System Role + Context Chunks + User Query + Constraints`.
+    *   **Model**: Gemini 2.5 Flash generates the final answer using *only* the provided context.
 
 ---
 
-## 🛠️ Recent Updates (v1.1)
+## 🛡️ Safety Logic & Guardrails
 
-- **Gemini 2.5 Flash**: Upgraded LLM for faster, more coherent responses.
-- **Persistent Feedback**: Feedback buttons now maintain their state across interactions.
-- **Visual Polish**: New Yoga Hero silhouette and refined typography.
+VedaFlow implements a **Dual-Layer Safety Mechanism**:
+
+1.  **Deterministic Layer (`services/safety.service.js`)**:
+    *   **Keyword Detection**: regex-based scanning for high-risk terms (e.g., "broken bone", "surgery", "heart attack").
+    *   **Action**: If detected, the AI is BYPASSED entirely. The system returns a hard-coded "Safety First" response advising medical attention.
+
+2.  **Model Layer**:
+    *   **Prompt Constraints**: The system prompt explicitly instructs the LLM: *"If the answer is not in the context, state you do not know. Do not hallucinate health advice."*
+
+---
+
+## 📊 Data Models (MongoDB)
+
+**User Query (`Query.js`)**
+Captures the full interaction lifecycle for auditing.
+```javascript
+{
+  userQuery: String,      // "What is Tree Pose?"
+  safetyFlag: {           // Was it unsafe?
+    isUnsafe: Boolean,
+    reason: String
+  },
+  retrievedChunks: [      // What context was used?
+    { chunkId, title, content }
+  ],
+  aiResponse: String,     // Final output
+  feedback: {             // User rating
+    isHelpful: Boolean,
+    comment: String
+  }
+}
+```
+
+---
+
+## 🤖 AI Agent Prompt Log
+
+This project was built using an AI Agent (Antigravity). Below is a summary of the prompts and capabilities used to generate this solution.
+
+| Interaction ID | User Objective | AI Action Taken |
+| :--- | :--- | :--- |
+| **Monorepo Init** | "Initialize a professional monorepo" | Created structure: `frontend/`, `backend/`, `rag/`. Configured Vite & Express. |
+| **Zen UI Design** | "Use Rich Aesthetics... Zen Slate" | Implemented `framer-motion` animations, glassmorphism, and custom "Yoga Silhouette" hero. |
+| **RAG Engine** | "Build a RAG pipeline for yoga" | Wrote `ingest.js` (Chunking/Embedding), `retrieval.service.js` (Cosine Sim), and connected Gemini API. |
+| **Safety Fix** | "Prevent medical advice" | Implemented `SafetyService` with regex guardrails to intercept specific keywords before AI processing. |
+| **Debugging 500** | "Fix 500 Internal Server Error" | Diagnosed missing `vector_index.json` & outdated model name (`gemini-1.5-flash` -> `gemini-2.5-flash`). |
+| **Persistence** | "Feedback buttons not highlighting" | Updated `FeedbackSection.jsx` to sync state with `App.jsx` and persist choices via MongoDB ID tracking. |
+| **Deployment** | "Fix Vercel deployment error" | Refactored `backend/index.js` for proper serverless rewrites and fixed CORS configuration. |
+
+---
+
+## 📱 Mobile Support (Capacitor)
+
+The project is pre-configured for Android conversion.
+*   **Config**: `capacitor.config.json` points to the production Vercel URL.
+*   **Build**: Run `npx cap sync` and `npx cap open android` to build the APK.
+
+---
+
+*Verified by VedaFlow Team | 2026*
