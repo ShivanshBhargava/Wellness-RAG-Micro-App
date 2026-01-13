@@ -31,8 +31,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
-// Force preflight to always return 200 with headers to satisfy strict browsers
-app.options('*', cors());
+// Handle preflight requests automatically via the middleware above
 
 app.use(express.json());
 
